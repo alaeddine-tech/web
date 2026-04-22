@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Al Shifa — Admin / Médecin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="admin.css"/>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN SCREEN  (FIXED)
+══════════════════════════════════════════ -->
+<div id="login-screen" class="show">
+  <div class="lc-wrap">
+
+    <!-- Back link -->
+    <a class="lc-back" href="index.html">← Retour à l'accueil</a>
+
+    <!-- Logo / role indicator -->
+    <div class="lc-head">
+      <div class="lc-icon" id="lc-icon"
+           style="background:linear-gradient(135deg,#16a34a,#166534);
+                  display:flex;align-items:center;justify-content:center;
+                  font-size:21px;color:#fff">⚕️</div>
+      <div>
+        <div class="lc-hname">Al Shifa</div>
+        <div class="lc-hrole" id="lc-role-lbl">Administration</div>
+      </div>
+    </div>
+
+    <!-- Role tabs -->
+    <div class="lc-tabs">
+      <button class="lc-tab active" id="lt-admin"
+              onclick="setLoginRole('admin',this)"> Admin</button>
+      <button class="lc-tab"        id="lt-med"
+              onclick="setLoginRole('medecin',this)"> Médecin</button>
+    </div>
+    
+    <!-- Username -->
+    <div class="fg">
+      <label class="fl" id="lbl-user">Identifiant</label>
+      <input class="fi" id="l-user" type="text" autocomplete="username"
+             placeholder="Ex : admin"/>
+    </div>
+
+    <!-- Password -->
+    <div class="fg">
+      <label class="fl" id="lbl-pass">Mot de passe</label>
+      <input class="fi" id="l-pass" type="password"
+             autocomplete="current-password" placeholder="••••••••"/>
+    </div>
+
+    <!-- Submit -->
+    <button class="btn-submit" id="lc-btn" onclick="doLogin()">
+      Se connecter
+    </button>
+
+    <!-- Error message -->
+    <div class="lc-err" id="lc-err"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APP SHELL
+══════════════════════════════════════════ -->
+<div id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-lm">⚕</div>
+      <div><div class="sb-ln">Al <span>Shifa</span></div></div>
+    </div>
+    <div class="sb-user">
+      <div class="sb-av" id="sb-av"></div>
+      <div style="flex:1;min-width:0">
+        <div class="sb-un"  id="sb-name"></div>
+        <div class="sb-ur"  id="sb-role-txt"></div>
+      </div>
+      <div class="sb-bdg" id="sb-bdg"></div>
+    </div>
+    <nav class="sb-nav" id="sb-nav"></nav>
+    <div class="sb-ft">
+      <div class="sb-ft-t">UHBC 2026</div>
+      <button class="btn-lo" onclick="doLogout()">⏻ Quitter</button>
+    </div>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <span style="cursor:pointer;font-size:19px;color:var(--gray400)"
+            onclick="document.getElementById('sidebar').classList.toggle('open')">☰</span>
+      <div class="tb-title" id="tb-title"></div>
+      <div class="lang-pill">
+        <button class="lp active" onclick="setLang('fr',this)">FR</button>
+        <button class="lp"        onclick="setLang('en',this)">EN</button>
+        <button class="lp"        onclick="setLang('ar',this)">AR</button>
+      </div>
+      <div class="tb-clock" id="tb-clock"></div>
+    </header>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="pg-dashboard">
+        <div class="dash-banner">
+          <div>
+            <div class="db-title" id="dw-title">Bonjour !</div>
+            <div class="db-sub">Bienvenue sur votre espace de gestion médicale.</div>
+            <div class="db-date" id="dw-date"></div>
+          </div>
+          <div style="font-size:52px;opacity:.3">⚕️</div>
+        </div>
+        <div class="kpi-grid" id="kpi-grid"></div>
+        <div class="dash-cols">
+          <div class="dpanel">
+            <div class="dp-t">📅 Rendez-vous du jour</div>
+            <div id="rdv-today"><div class="loading">…</div></div>
+          </div>
+          <div class="dpanel">
+            <div class="dp-t">📨 Dernières demandes</div>
+            <div id="dem-recent"><div class="loading">…</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEMANDES -->
+      <div class="page" id="pg-demandes">
+        <div class="ph">
+          <div><h2>Demandes patients</h2><p>À traiter</p></div>
+          <div class="ph-r">
+            <select class="fsel" id="f-dem-s" onchange="renderDemandes()">
+              <option value="">Tous</option>
+              <option>En attente</option><option>Accepté</option><option>Refusé</option>
+            </select>
+          </div>
+        </div>
+        <div id="dem-list"><div class="loading">…</div></div>
+      </div>
+
+      <!-- MÉDECINS -->
+      <div class="page" id="pg-medecins">
+        <div class="ph">
+          <div><h2>Médecins</h2></div>
+          <div class="ph-r">
+            <button class="btn btn-print btn-sm" onclick="printPage('medecin')">🖨</button>
+            <button class="btn btn-primary" onclick="openModal('medecin')">+ Ajouter</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input class="si" id="s-medecin" placeholder="🔍" oninput="renderTbl('medecin')"/>
+        </div>
+        <div class="tbl-wrap"><div class="tbl-inner">
+          <table><thead><tr>
+            <th>Médecin</th><th>Spécialité</th><th>Téléphone</th>
+            <th>Email</th><th>Identifiant</th><th>Statut</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="tb-medecin"></tbody></table>
+        </div></div>
+      </div>
+
+      <!-- PATIENTS -->
+      <div class="page" id="pg-patients">
+        <div class="ph">
+          <div><h2>Patients</h2></div>
+          <div class="ph-r">
+            <button class="btn btn-print btn-sm" onclick="printPage('patient')">🖨</button>
+            <button class="btn btn-primary" onclick="openModal('patient')">+ Ajouter</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input class="si" id="s-patient" placeholder="🔍" oninput="renderTbl('patient')"/>
+          <select class="fsel" id="f-p-sex" onchange="renderTbl('patient')">
+            <option value="">Tous</option><option>Masculin</option><option>Féminin</option>
+          </select>
+        </div>
+        <div class="tbl-wrap"><div class="tbl-inner">
+          <table><thead><tr>
+            <th>Patient</th><th>Sexe</th><th>Naissance</th>
+            <th>Téléphone</th><th>Email</th><th>Inscrit le</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="tb-patient"></tbody></table>
+        </div></div>
+      </div>
+
+      <!-- RDV -->
+      <div class="page" id="pg-rdv">
+        <div class="ph">
+          <div><h2>Rendez-vous</h2></div>
+          <div class="ph-r">
+            <button class="btn btn-print btn-sm" onclick="printPage('rdv')">🖨</button>
+            <button class="btn btn-primary" onclick="openModal('rdv')">+ Ajouter</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input class="si" id="s-rdv" placeholder="🔍" oninput="renderTbl('rdv')"/>
+          <select class="fsel" id="f-rdv-s" onchange="renderTbl('rdv')">
+            <option value="">Tous</option>
+            <option>Confirmé</option><option>En attente</option>
+            <option>Annulé</option><option>Terminé</option>
+          </select>
+        </div>
+        <div class="tbl-wrap"><div class="tbl-inner">
+          <table><thead><tr>
+            <th>Patient</th><th>Médecin</th><th>Date</th><th>Heure</th>
+            <th>Motif</th><th>Urgence</th><th>Statut</th><th>Inscrit le</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="tb-rdv"></tbody></table>
+        </div></div>
+      </div>
+
+      <!-- CONSULTATIONS -->
+      <div class="page" id="pg-consultations">
+        <div class="ph">
+          <div><h2>Consultations</h2></div>
+          <div class="ph-r">
+            <button class="btn btn-print btn-sm" onclick="printPage('consultation')">🖨</button>
+            <button class="btn btn-primary" onclick="openModal('consultation')">+ Ajouter</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input class="si" id="s-consultation" placeholder="🔍" oninput="renderTbl('consultation')"/>
+        </div>
+        <div class="tbl-wrap"><div class="tbl-inner">
+          <table><thead><tr>
+            <th>Patient</th><th>Médecin</th><th>Date</th>
+            <th>Motif</th><th>Diagnostic</th><th>Traitement</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="tb-consultation"></tbody></table>
+        </div></div>
+      </div>
+
+      <!-- PRESCRIPTIONS -->
+      <div class="page" id="pg-prescriptions">
+        <div class="ph">
+          <div><h2>Prescriptions</h2><p>Ordonnances médicales</p></div>
+          <div class="ph-r">
+            <button class="btn btn-primary" onclick="openModal('prescription')">+ Nouvelle ordonnance</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input class="si" id="s-prescription" placeholder="🔍" oninput="renderRx(false)"/>
+        </div>
+        <div id="rx-list"><div class="loading">…</div></div>
+      </div>
+
+      <!-- MON PROFIL (médecin) -->
+      <div class="page" id="pg-monprofil">
+        <div class="ph"><div><h2>Mon profil</h2></div></div>
+        <div id="profil-content"></div>
+      </div>
+
+      <!-- MES RDV (médecin) -->
+      <div class="page" id="pg-mesrdv">
+        <div class="ph">
+          <div><h2>Mes rendez-vous</h2></div>
+          <div class="ph-r">
+            <button class="btn btn-print btn-sm" onclick="printPage('rdv')">🖨</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input class="si" id="s-mesrdv" placeholder="🔍" oninput="renderTbl('mesrdv')"/>
+        </div>
+        <div class="tbl-wrap"><div class="tbl-inner">
+          <table><thead><tr>
+            <th>Patient</th><th>Date</th><th>Heure</th>
+            <th>Motif</th><th>Urgence</th><th>Statut</th><th>Inscrit le</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="tb-mesrdv"></tbody></table>
+        </div></div>
+      </div>
+
+      
+
+      <!-- MES CONSULTATIONS (médecin) -->
+      <div class="page" id="pg-mesconsult">
+        <div class="ph">
+          <div><h2>Mes consultations</h2></div>
+          <div class="ph-r">
+            <button class="btn btn-primary" onclick="openModal('consultation')">+ Nouvelle</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input class="si" id="s-mesconsult" placeholder="🔍" oninput="renderTbl('mesconsult')"/>
+        </div>
+        <div class="tbl-wrap"><div class="tbl-inner">
+          <table><thead><tr>
+            <th>Patient</th><th>Date</th><th>Motif</th>
+            <th>Diagnostic</th><th>Traitement</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="tb-mesconsult"></tbody></table>
+        </div></div>
+      </div>
+
+      <!-- MES PRESCRIPTIONS (médecin) -->
+      <div class="page" id="pg-mesprescriptions">
+        <div class="ph">
+          <div><h2>Mes prescriptions</h2></div>
+          <div class="ph-r">
+            <button class="btn btn-primary" onclick="openModal('prescription')">+ Nouvelle</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input class="si" id="s-mesprescriptions" placeholder="🔍" oninput="renderRx(true)"/>
+        </div>
+        <div id="mes-rx-list"><div class="loading">…</div></div>
+      </div>
+
+      <!-- MÉDICAMENTS (Admin) -->
+      <div class="page" id="pg-medicaments">
+        <div class="ph">
+          <div><h2> Médicaments</h2><p>Catalogue de la pharmacie</p></div>
+          <div class="ph-r">
+            <button class="btn btn-print btn-sm" onclick="printMeds()">🖨</button>
+            <button class="btn btn-primary" onclick="openModal('medicament')">+ Ajouter</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input class="si" id="s-medicament" placeholder="🔍 Rechercher..."
+                 oninput="renderMeds()"/>
+          <select class="fsel" id="f-med-cat" onchange="renderMeds()">
+            <option value="">Toutes catégories</option>
+            <option>Analgésique</option><option>Antibiotique</option>
+            <option>Anti-inflammatoire</option><option>Antihypertenseur</option>
+            <option>Antidiabétique</option><option>Antiviral</option>
+            <option>Cardiovasculaire</option><option>Pédiatrie</option>
+            <option>Vitamines / Suppléments</option><option>Autre</option>
+          </select>
+          <select class="fsel" id="f-med-stock" onchange="renderMeds()">
+            <option value="">Tout stock</option>
+            <option value="ok">En stock</option>
+            <option value="low">Stock faible</option>
+            <option value="out">Épuisé</option>
+          </select>
+        </div>
+        <div id="meds-summary" style="display:flex;gap:12px;padding:0 0 16px;flex-wrap:wrap"></div>
+        <div class="tbl-wrap"><div class="tbl-inner">
+          <table><thead><tr>
+            <th>Médicament</th><th>Catégorie</th><th>Dosage</th><th>Forme</th>
+            <th>Stock</th><th>Seuil</th><th>Prix (DA)</th><th>Fournisseur</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="tb-medicaments"></tbody></table>
+        </div></div>
+      </div>
+
+      <!-- MOTS DE PASSE (Admin) -->
+      <div class="page" id="pg-passwords">
+        <div class="ph">
+          <div><h2> Gestion des mots de passe</h2><p>Modifier les accès utilisateurs</p></div>
+        </div>
+        <div style="padding:0 0 24px">
+          <div class="pwd-section">
+            <div class="pwd-section-title"> Compte Administrateur</div>
+            <div class="pwd-card">
+              <div class="pwd-av" style="background:linear-gradient(135deg,#16a34a,#166534)">A</div>
+              <div style="flex:1">
+                <div class="pwd-name">Administrateur</div>
+                <div class="pwd-meta">Identifiant : <code>admin</code></div>
+              </div>
+              <button class="btn btn-warn btn-sm"
+                      onclick="openModal('changePass','__admin__')">🔑 Changer</button>
+            </div>
+          </div>
+          <div class="pwd-section" style="margin-top:28px">
+            <div class="pwd-section-title"> Médecins</div>
+            <div id="pwd-medecins-list"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="modal-ov" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mhd">
+      <div>
+        <div class="mhd-title" id="m-title"></div>
+        <div class="mhd-sub"   id="m-sub"></div>
+      </div>
+      <button class="mclose" onclick="closeModal()">✕</button>
+    </div>
+    <div class="mbody" id="m-body"></div>
+    <div class="mft">
+      <button class="btn btn-ghost"   onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" id="m-save" onclick="submitModal()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script src="admin.js"></script>
+</body>
+</html>
