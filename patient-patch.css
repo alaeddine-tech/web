@@ -1,9 +1,4 @@
-/* ═══════════════════════════════════════════
-   ADD THIS TO THE BOTTOM OF patient.css
-   Language switcher + RDV card fixes
-═══════════════════════════════════════════ */
 
-/* ── Language buttons (auth screen + app nav) ── */
 .auth-lang {
   display: flex;
   gap: 6px;
