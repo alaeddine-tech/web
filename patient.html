@@ -27,7 +27,7 @@
        data-i18n="back">← Retour à l'accueil</a>
 
     <div class="auth-logo">
-      <div class="auth-logo-icon">🧑‍⚕️</div>
+      
       <div>
         <div class="auth-logo-name" data-i18n="login_title">Al Shifa — Patient</div>
         <div class="auth-logo-sub"  data-i18n="login_sub">Votre espace santé personnel</div>
@@ -55,7 +55,7 @@
       </div>
       <div class="auth-err" id="l-err"></div>
       <button class="btn-primary" id="btn-login" onclick="doLogin()">
-        <span data-i18n="btn_login">🔑 Se connecter</span>
+        <span data-i18n="btn_login"> Se connecter</span>
       </button>
       <div class="auth-switch">
         <span data-i18n="no_account">Pas encore de compte ?</span>
@@ -107,7 +107,7 @@
       </div>
       <div class="auth-err" id="r-err"></div>
       <button class="btn-primary" id="btn-reg" onclick="doRegister()">
-        <span data-i18n="btn_reg">✅ Créer mon compte</span>
+        <span data-i18n="btn_reg"> Créer mon compte</span>
       </button>
       <div class="auth-switch">
         <span data-i18n="already">Déjà un compte ?</span>
@@ -142,19 +142,19 @@
   <div class="app-body">
     <aside class="sidebar">
       <button class="side-btn active" onclick="goPage('dashboard',this)">
-        <span class="side-ic">🏠</span>
+        <span class="side-ic"></span>
         <span data-i18n="nav_home">Accueil</span>
       </button>
       <button class="side-btn" onclick="goPage('rdv',this)">
-        <span class="side-ic">📅</span>
+        
         <span data-i18n="nav_rdv">Prendre RDV</span>
       </button>
       <button class="side-btn" onclick="goPage('mes-rdv',this)">
-        <span class="side-ic">📋</span>
+        
         <span data-i18n="nav_myrdv">Mes rendez-vous</span>
       </button>
       <button class="side-btn" onclick="goPage('profil',this)">
-        <span class="side-ic">👤</span>
+        
         <span data-i18n="nav_profil">Mon profil</span>
       </button>
     </aside>
@@ -171,7 +171,7 @@
 
       <!-- PRENDRE RDV -->
       <div class="page" id="pg-rdv">
-        <div class="page-title" data-i18n="pg_rdv">📅 Prendre un rendez-vous</div>
+        <div class="page-title" data-i18n="pg_rdv"> Prendre un rendez-vous</div>
         <div class="page-sub"   data-i18n="pg_rdv_sub">Remplissez le formulaire pour soumettre votre demande.</div>
         <div class="form-card">
           <div class="section-title" data-i18n="pg_rdv">Détails de la demande</div>
@@ -210,7 +210,7 @@
           </div>
           <div style="display:flex;justify-content:flex-end;margin-top:8px">
             <button class="btn-send" id="btn-send" onclick="submitRDV()">
-              <span data-i18n="btn_send">📤 Envoyer la demande</span>
+              <span data-i18n="btn_send"> Envoyer la demande</span>
             </button>
           </div>
         </div>
@@ -218,14 +218,14 @@
 
       <!-- MES RDV -->
       <div class="page" id="pg-mes-rdv">
-        <div class="page-title" data-i18n="pg_myrdv">📋 Mes rendez-vous</div>
+        <div class="page-title" data-i18n="pg_myrdv"> Mes rendez-vous</div>
         <div class="page-sub"   data-i18n="pg_myrdv_sub">Suivez l'état de toutes vos demandes.</div>
         <div id="rdv-list"></div>
       </div>
 
       <!-- PROFIL -->
       <div class="page" id="pg-profil">
-        <div class="page-title" data-i18n="pg_profil">👤 Mon profil</div>
+        <div class="page-title" data-i18n="pg_profil"> Mon profil</div>
         <div class="page-sub"   data-i18n="pg_profil_sub">Modifiez vos informations personnelles.</div>
         <div id="profil-content"></div>
       </div>
