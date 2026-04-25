@@ -151,9 +151,9 @@ function setLoginRole(role, btn) {
   btn.classList.add('active');
   // Update icon & label
   const cfg = {
-    admin:   { icon: '👑', label: 'Administration',
+    admin:   { icon: 'reglages.png', label: 'Administration',
                bg: 'linear-gradient(135deg,#16a34a,#166534)' },
-    medecin: { icon: '🩺', label: 'Médecin',
+    medecin: { icon: '', label: 'Médecin',
                bg: 'linear-gradient(135deg,#16a34a,#0d9488)' },
   }[role];
   const iconEl = document.getElementById('lc-icon');

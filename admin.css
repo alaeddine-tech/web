@@ -53,6 +53,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   font-size:20px;color:#fff;font-weight:700;font-family:'Playfair Display',serif;
   box-shadow:0 4px 12px rgba(10,124,89,.3);
 }
+.lc-icon{
+  height: 20px;
+  width: 20px;
+}
 .l-logo-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--dark)}
 .l-logo-name span{color:var(--g600)}
 .l-nav-links{display:flex;align-items:center;gap:32px}

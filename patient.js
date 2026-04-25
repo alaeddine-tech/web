@@ -1,6 +1,6 @@
 
 
-const API = 'http://localhost/cabinet/api.php';   // ← same as admin.js
+const API = 'http://localhost/cabinet/back-end/api1.php';   // ← same as admin.js
 
 /* ── API helper ─────────────────────────────────────────── */
 async function apiFetch(endpoint, method = 'GET', data = null) {
