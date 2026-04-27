@@ -1,10 +1,4 @@
 <?php
-// ============================================================
-//  Al Shifa — API PHP  (api1.php)
-//  Place in: C:/xampp/htdocs/cabinet/back-end/api1.php
-//  PDO replaced with mysqli
-// ============================================================
-
 error_reporting(0);
 ini_set('display_errors', '0');
 
