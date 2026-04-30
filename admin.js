@@ -1,13 +1,6 @@
-/* ═══════════════════════════════════════════════════════════
-   Al Shifa — admin.js
-   Backend : PHP API  (../backend/api.php)
-   ═══════════════════════════════════════════════════════════ */
 
-/* ── API URL  — adjust to match YOUR XAMPP folder name ──────
-   Your project folder is:  C:/xampp/htdocs/cabinet/
-   patient.js uses the SAME URL — keep them in sync.          */
 const API = 'http://localhost/cabinet/back-end/api1.php';
-
+ 
 /* ── CORE fetch helper ──────────────────────────────────── */
 async function api(endpoint, method = 'GET', data = null) {
   try {
@@ -27,13 +20,13 @@ async function api(endpoint, method = 'GET', data = null) {
     return null;
   }
 }
-
+ 
 /* ── IN-MEMORY CACHE ────────────────────────────────────── */
 let DB = {
   medecins: [], patients: [], rdvs: [],
   consultations: [], demandes: [], prescriptions: [], medicaments: []
 };
-
+ 
 async function loadAll() {
   const [med, pat, rdv, con, rx, dem, meds] = await Promise.all([
     api('medecins'), api('patients'), api('rdvs'),
@@ -47,12 +40,12 @@ async function loadAll() {
   DB.demandes      = dem   || [];
   DB.medicaments   = meds  || [];
 }
-
+ 
 async function refresh(store) {
   const d = await api(store);
   if (d) DB[store] = d;
 }
-
+ 
 /* ── i18n ────────────────────────────────────────────────── */
 const T = {
   fr:{ nav_dashboard:'Tableau de bord',nav_dem:'Demandes patients',nav_med:'Médecins',
@@ -82,9 +75,9 @@ const T = {
 };
 let LANG = 'fr';
 let _activePage = 'dashboard'; // ── FIX: track current page for lang switch
-
+ 
 function t(k) { return T[LANG][k] || T.fr[k] || k; }
-
+ 
 function setLang(lang, btn) {
   LANG = lang;
   document.documentElement.lang = lang;
@@ -97,13 +90,13 @@ function setLang(lang, btn) {
     goPage(_activePage); // ── FIX: re-render active page in new language
   }
 }
-
+ 
 function renderDateStr() {
   const n = new Date(), el = document.getElementById('dw-date');
   if (el) el.textContent =
     `${t('days')[n.getDay()]} ${n.getDate()} ${t('months')[n.getMonth()]} ${n.getFullYear()}`;
 }
-
+ 
 /* ── CONSTANTS ───────────────────────────────────────────── */
 const MOTIFS = [
   'Consultation générale','Contrôle de routine','Douleur thoracique',
@@ -125,7 +118,7 @@ const MED_CATS = ['Analgésique','Antibiotique','Anti-inflammatoire','Antihypert
   'Antidiabétique','Antihistaminique','Antiviral','Cardiovasculaire','Dermatologie',
   'Gastro-entérologie','Neurologie','Pédiatrie','Vitamines / Suppléments','Autre'];
 const COLORS = ['#16a34a','#059669','#0d9488','#0891b2','#6366f1','#9333ea','#c026d3','#db2777'];
-
+ 
 const uid  = () => Math.random().toString(36).slice(2, 9);
 const today= () => new Date().toISOString().slice(0, 10);
 const fmt  = d  => {
@@ -134,7 +127,7 @@ const fmt  = d  => {
   return new Date(d + 'T00:00:00').toLocaleDateString(locale);
 };
 const san  = s  => String(s || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
+ 
 /* ══════════════════════════════════════════════════════════
    AUTH  ── THE LOGIN BUG FIX IS HERE
    Problem: admin.html previously had ONE doLogin() called
@@ -143,7 +136,7 @@ const san  = s  => String(s || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 ══════════════════════════════════════════════════════════ */
 let selectedRole = 'admin';
 let CU = null;
-
+ 
 function setLoginRole(role, btn) {
   selectedRole = role;
   // Update tabs
@@ -162,50 +155,50 @@ function setLoginRole(role, btn) {
   document.getElementById('lc-role-lbl').textContent = cfg.label;
   document.getElementById('lc-err').textContent = '';
 }
-
+ 
 async function doLogin() {
   const u    = document.getElementById('l-user').value.trim();
   const p    = document.getElementById('l-pass').value.trim();
   const errEl = document.getElementById('lc-err');
   errEl.textContent = '';
-
+ 
   if (!u || !p) {
     errEl.textContent = 'Identifiant et mot de passe requis.';
     return;
   }
-
+ 
   // Disable button while logging in
   const btn = document.getElementById('lc-btn');
   btn.disabled = true;
   btn.textContent = 'Connexion…';
-
+ 
   const res = await api('login', 'POST', { user: u, pass: p, role: selectedRole });
-
+ 
   btn.disabled = false;
   btn.textContent = 'Se connecter';
-
+ 
   if (!res || !res.success) {
     errEl.textContent = 'Identifiant ou mot de passe incorrect.';
     return;
   }
-
+ 
   if (selectedRole === 'admin') {
-    CU = { role: 'admin', nom: 'Administrateur', avatar: 'A', color: '#16a34a' };
+    CU = { role: 'admin', nom: 'Administrateur', avatar: '', color: '#16a34a' };
   } else {
     CU = {
       role: 'medecin',
       nom:  res.nom,
-      avatar: res.nom.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(),
+      avatar: '',
       color:  res.color || '#16a34a',
       medecinId: res.id,
       spec: res.spec,
     };
   }
-
+ 
   await loadAll();
   startApp();
 }
-
+ 
 // Allow Enter key to submit
 document.getElementById('l-pass').addEventListener('keydown', e => {
   if (e.key === 'Enter') doLogin();
@@ -213,7 +206,7 @@ document.getElementById('l-pass').addEventListener('keydown', e => {
 document.getElementById('l-user').addEventListener('keydown', e => {
   if (e.key === 'Enter') doLogin();
 });
-
+ 
 function doLogout() {
   CU = null;
   document.getElementById('app').classList.remove('show');
@@ -222,13 +215,13 @@ function doLogout() {
   document.getElementById('l-pass').value = '';
   document.getElementById('lc-err').textContent = '';
 }
-
+ 
 /* ── APP START ───────────────────────────────────────────── */
 function startApp() {
   document.getElementById('login-screen').classList.remove('show');
   document.getElementById('app').classList.add('show');
-  document.getElementById('sb-av').textContent = CU.avatar;
-  document.getElementById('sb-av').style.background = CU.color;
+  document.getElementById('sb-av').textContent = '';
+  document.getElementById('sb-av').style.background = 'none';
   document.getElementById('sb-name').textContent = CU.nom;
   document.getElementById('sb-role-txt').textContent =
     CU.role === 'admin' ? 'Administrateur' : 'Médecin – ' + CU.spec;
@@ -243,7 +236,7 @@ function startApp() {
       { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   }, 1000);
 }
-
+ 
 function buildNav() {
   const pend   = DB.demandes.filter(d => d.statut === 'En attente').length;
   const myPend = CU.role === 'medecin'
@@ -251,28 +244,28 @@ function buildNav() {
         (d.medecinId === CU.medecinId || !d.medecinId) &&
         d.statut === 'En attente').length
     : 0;
-
+ 
   const adminN = [
-    { id: 'dashboard',     icon: '📊', k: 'nav_dashboard' },
-    { id: 'demandes',      icon: '📨', k: 'nav_dem',   badge: pend },
-    { id: 'medecins',      icon: '🩺', k: 'nav_med' },
-    { id: 'patients',      icon: '👥', k: 'nav_pat' },
-    { id: 'rdv',           icon: '📅', k: 'nav_rdv' },
-    { id: 'consultations', icon: '📋', k: 'nav_cons' },
-    { id: 'prescriptions', icon: '💊', k: 'nav_rx' },
-    { id: 'medicaments',   icon: '🧪', k: 'nav_meds' },
-    { id: 'passwords',     icon: '🔐', k: 'nav_pwd' },
+    { id: 'dashboard',     icon: '', k: 'nav_dashboard' },
+    { id: 'demandes',      icon: '', k: 'nav_dem',   badge: pend },
+    { id: 'medecins',      icon: '', k: 'nav_med' },
+    { id: 'patients',      icon: '', k: 'nav_pat' },
+    { id: 'rdv',           icon: '', k: 'nav_rdv' },
+    { id: 'consultations', icon: '', k: 'nav_cons' },
+    { id: 'prescriptions', icon: '', k: 'nav_rx' },
+    { id: 'medicaments',   icon: '', k: 'nav_meds' },
+    { id: 'passwords',     icon: '', k: 'nav_pwd' },
   ];
   const medN = [
-    { id: 'dashboard',        icon: '📊', k: 'nav_dashboard' },
-    { id: 'mesdemandes',      icon: '📨', k: 'nav_mydem', badge: myPend },
-    { id: 'monprofil',        icon: '👤', k: 'nav_profil' },
-    { id: 'mesrdv',           icon: '📅', k: 'nav_myrdv' },
-    { id: 'mesconsult',       icon: '📋', k: 'nav_mycons' },
-    { id: 'mesprescriptions', icon: '💊', k: 'nav_myrx' },
-    { id: 'patients',         icon: '👥', k: 'nav_pat' },
+    { id: 'dashboard',        icon: '', k: 'nav_dashboard' },
+    { id: 'mesdemandes',      icon: '', k: 'nav_mydem', badge: myPend },
+    { id: 'monprofil',        icon: '', k: 'nav_profil' },
+    { id: 'mesrdv',           icon: '', k: 'nav_myrdv' },
+    { id: 'mesconsult',       icon: '', k: 'nav_mycons' },
+    { id: 'mesprescriptions', icon: '', k: 'nav_myrx' },
+    { id: 'patients',         icon: '', k: 'nav_pat' },
   ];
-
+ 
   const pages = CU.role === 'admin' ? adminN : medN;
   document.getElementById('sb-nav').innerHTML = pages.map(p => `
     <button class="nav-btn" data-page="${p.id}" onclick="goPage('${p.id}')">
@@ -281,7 +274,7 @@ function buildNav() {
       ${p.badge ? `<span class="notif-dot">${p.badge}</span>` : ''}
     </button>`).join('');
 }
-
+ 
 function goPage(id) {
   _activePage = id; // ── FIX: track so setLang can re-render
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -312,36 +305,36 @@ function goPage(id) {
   };
   (map[id] || (() => {}))();
 }
-
+ 
 /* ── DASHBOARD ───────────────────────────────────────────── */
 async function renderDash() {
   renderDateStr();
   document.getElementById('dw-title').textContent =
     'Bonjour, ' + CU.nom.split(' ')[0] + ' !';
-
+ 
   const stats   = await api('dashboard') || {};
   const todayStr = today();
   const myRdvs  = CU.role === 'admin'
     ? DB.rdvs
     : DB.rdvs.filter(r => r.medecinId === CU.medecinId);
-
+ 
   const kpis = CU.role === 'admin' ? [
-    { icon:'🩺', val: stats.medecins,      lbl: t('nav_med'),   color:'var(--g600)', page:'medecins' },
-    { icon:'👥', val: stats.patients,      lbl: t('nav_pat'),   color:'#0891b2',     page:'patients' },
-    { icon:'📨', val: stats.dem_pending,   lbl: t('nav_dem'),   color:'#d97706',     page:'demandes' },
-    { icon:'📅', val: stats.rdvs_today,    lbl: t('today_rdv'), color:'#9333ea',     page:'rdv' },
-    { icon:'💊', val: stats.prescriptions, lbl: t('nav_rx'),    color:'#db2777',     page:'prescriptions' },
+    { icon:'', val: stats.medecins,      lbl: t('nav_med'),   color:'var(--g600)', page:'medecins' },
+    { icon:'', val: stats.patients,      lbl: t('nav_pat'),   color:'#0891b2',     page:'patients' },
+    { icon:'', val: stats.dem_pending,   lbl: t('nav_dem'),   color:'#d97706',     page:'demandes' },
+    { icon:'', val: stats.rdvs_today,    lbl: t('today_rdv'), color:'#9333ea',     page:'rdv' },
+    { icon:'', val: stats.prescriptions, lbl: t('nav_rx'),    color:'#db2777',     page:'prescriptions' },
   ] : [
-    { icon:'📨', val: DB.demandes.filter(d=>(d.medecinId===CU.medecinId||!d.medecinId)&&d.statut==='En attente').length,
+    { icon:'', val: DB.demandes.filter(d=>(d.medecinId===CU.medecinId||!d.medecinId)&&d.statut==='En attente').length,
       lbl:t('nav_mydem'), color:'#d97706', page:'mesdemandes' },
-    { icon:'📅', val: myRdvs.filter(r=>r.date===todayStr).length,
+    { icon:'', val: myRdvs.filter(r=>r.date===todayStr).length,
       lbl:t('today_rdv'), color:'var(--g600)', page:'mesrdv' },
-    { icon:'📋', val: DB.consultations.filter(c=>c.medecinId===CU.medecinId).length,
+    { icon:'', val: DB.consultations.filter(c=>c.medecinId===CU.medecinId).length,
       lbl:t('nav_mycons'), color:'#0891b2', page:'mesconsult' },
-    { icon:'💊', val: DB.prescriptions.filter(p=>p.medecinId===CU.medecinId).length,
+    { icon:'', val: DB.prescriptions.filter(p=>p.medecinId===CU.medecinId).length,
       lbl:t('nav_myrx'), color:'#9333ea', page:'mesprescriptions' },
   ];
-
+ 
   document.getElementById('kpi-grid').innerHTML = kpis.map(k =>
     `<div class="kpi" onclick="goPage('${k.page}')">
       <div class="kpi-ic">${k.icon}</div>
@@ -350,7 +343,7 @@ async function renderDash() {
       <div class="kpi-bar" style="background:${k.color}"></div>
     </div>`
   ).join('');
-
+ 
   const tr = myRdvs.filter(r => r.date === todayStr);
   document.getElementById('rdv-today').innerHTML = tr.length
     ? tr.slice(0, 5).map(r => {
@@ -365,7 +358,7 @@ async function renderDash() {
         </div>`;
       }).join('')
     : `<div style="text-align:center;padding:20px;color:var(--gray300);font-size:13px">—</div>`;
-
+ 
   const rd = DB.demandes.filter(d => d.statut === 'En attente').slice(-4);
   document.getElementById('dem-recent').innerHTML = rd.length
     ? rd.map(d =>
@@ -379,14 +372,13 @@ async function renderDash() {
       ).join('')
     : `<div style="color:var(--gray300);font-size:13px;text-align:center;padding:20px">—</div>`;
 }
-
+ 
 /* ── HELPERS ─────────────────────────────────────────────── */
 const getP = id => DB.patients.find(p => p.id === id) || { nom: '—', sexe: '' };
 const getM = id => DB.medecins.find(m => m.id === id) || { nom: '—', color: '#888' };
-
+ 
 function av(name, color, sz = 30) {
-  const i = (name || '?').split(' ').filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();
-  return `<div class="mav" style="background:${color||'#16a34a'};width:${sz}px;height:${sz}px;font-size:${sz/2.8}px">${i}</div>`;
+  return '';
 }
 function urgBadge(u) {
   if (u === 'Urgent')     return '<span class="badge b-red">🔴 Urgent</span>';
@@ -397,7 +389,7 @@ function statBadge(s) {
   const m = { Confirmé:'b-green','En attente':'b-warn', Annulé:'b-red', Terminé:'b-blue' };
   return `<span class="badge ${m[s]||'b-gray'}">${s}</span>`;
 }
-
+ 
 /* ── DEMANDES ────────────────────────────────────────────── */
 async function renderDemandes() {
   await refresh('demandes');
@@ -422,17 +414,15 @@ function renderDemList(cid, dems, fs) {
     return;
   }
   list.innerHTML = filtered.map(d => {
-    const ini = d.nom.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
     const rc  = COLORS[Math.abs((d.nom.charCodeAt(0)||0)+(d.nom.charCodeAt(1)||0)) % COLORS.length];
     const med = d.medecinId ? DB.medecins.find(m => m.id === d.medecinId) : null;
     return `<div class="dem-card ${d.statut==='En attente'?'pending':d.statut==='Accepté'?'accepted':'rejected'}">
-      <div class="dem-av" style="background:${rc}">${ini}</div>
       <div style="flex:1;min-width:0">
         <div class="dem-name">${san(d.nom)}</div>
         <div class="dem-detail">
-          📞 ${san(d.tel||'—')} &nbsp;·&nbsp; 📅 <strong>${fmt(d.date)}</strong>
+          📞 ${san(d.tel||'—')} &nbsp;·&nbsp;  <strong>${fmt(d.date)}</strong>
           &nbsp;·&nbsp; ${urgBadge(d.urgence)}<br/>
-          ${med ? `👨‍⚕️ ${san(med.nom)} – ${san(med.spec)}` : '👨‍⚕️ Indifférent'}
+          ${med ? `👨‍⚕️ ${san(med.nom)} – ${san(med.spec)}` : ' Indifférent'}
         </div>
         <div class="dem-mtag">${san(d.motif)}</div>
         ${d.msg ? `<div style="font-size:12px;color:var(--gray400);margin-top:5px;font-style:italic">"${san(d.msg)}"</div>` : ''}
@@ -442,8 +432,8 @@ function renderDemList(cid, dems, fs) {
       </div>
       <div class="dem-actions">
         ${d.statut === 'En attente'
-          ? `<button class="btn btn-success btn-sm" onclick="handleDem('${d.id}','Accepté')">✅ Accepter</button>
-             <button class="btn btn-danger  btn-sm" onclick="handleDem('${d.id}','Refusé')">❌ Refuser</button>`
+          ? `<button class="btn btn-success btn-sm" onclick="handleDem('${d.id}','Accepté')"> Accepter</button>
+             <button class="btn btn-danger  btn-sm" onclick="handleDem('${d.id}','Refusé')"> Refuser</button>`
           : `<span class="badge ${d.statut==='Accepté'?'b-green':'b-red'}">
                ${d.statut==='Accepté'?'✅':'❌'} ${d.statut}
              </span>`}
@@ -451,7 +441,7 @@ function renderDemList(cid, dems, fs) {
     </div>`;
   }).join('');
 }
-
+ 
 async function handleDem(id, action) {
   const d = DB.demandes.find(x => x.id === id);
   if (!d) return;
@@ -479,7 +469,7 @@ async function handleDem(id, action) {
   toast(action === 'Accepté' ? 'Accepté – RDV créé !' : 'Refusé.',
         action === 'Accepté' ? 'success' : 'warn');
 }
-
+ 
 /* ── TABLES ──────────────────────────────────────────────── */
 async function renderTbl(type) {
   const storeMap = {
@@ -489,7 +479,7 @@ async function renderTbl(type) {
   };
   if (storeMap[type]) await refresh(storeMap[type]);
   const q = id => (document.getElementById('s-' + id)?.value || '').toLowerCase();
-
+ 
   if (type === 'medecin') {
     const rows = DB.medecins.filter(m =>
       !q('medecin') || (m.nom + m.spec + m.email).toLowerCase().includes(q('medecin')));
@@ -595,12 +585,12 @@ async function renderTbl(type) {
       : `<tr><td class="empty-td" colspan="${isMe ? 6 : 7}">—</td></tr>`;
   }
 }
-
+ 
 async function markDone(id) {
   const r = await api(`rdvs&id=${id}`, 'PUT', { statut: 'Terminé' });
   if (r) { await refresh('rdvs'); renderTbl('mesrdv'); toast('RDV terminé ✓', 'success'); }
 }
-
+ 
 /* ── PRESCRIPTIONS ───────────────────────────────────────── */
 async function renderRx(onlyMine) {
   await refresh('prescriptions');
@@ -635,7 +625,7 @@ async function renderRx(onlyMine) {
       }).join('')
     : `<div style="text-align:center;padding:40px;color:var(--gray300)">Aucune prescription.</div>`;
 }
-
+ 
 function printRx(id) {
   const rx = DB.prescriptions.find(x => x.id === id);
   if (!rx) return;
@@ -669,7 +659,7 @@ function printRx(id) {
   w.document.close();
   setTimeout(() => w.print(), 400);
 }
-
+ 
 /* ── MON PROFIL ──────────────────────────────────────────── */
 async function renderMonProfil() {
   await refresh('medecins');
@@ -696,7 +686,7 @@ async function renderMonProfil() {
       <button class="btn btn-warn" onclick="openModal('editProfil','${m.id}')">✏ Modifier mon profil</button>
     </div>`;
 }
-
+ 
 /* ── MÉDICAMENTS ─────────────────────────────────────────── */
 async function renderMeds() {
   await refresh('medicaments');
@@ -717,16 +707,16 @@ async function renderMeds() {
   const inStock= all.filter(m => m.stock >  m.seuil).length;
   const low    = all.filter(m => m.stock >  0 && m.stock <= m.seuil).length;
   const out    = all.filter(m => m.stock == 0).length;
-
+ 
   document.getElementById('meds-summary').innerHTML = `
     <div class="med-sum-card"><div class="med-sum-val">${total}</div><div class="med-sum-lbl">Total</div></div>
     <div class="med-sum-card" style="border-color:var(--g200)"><div class="med-sum-val" style="color:var(--g600)">${inStock}</div><div class="med-sum-lbl">En stock</div></div>
     <div class="med-sum-card" style="border-color:#fde68a"><div class="med-sum-val" style="color:#b45309">${low}</div><div class="med-sum-lbl">Stock faible</div></div>
     <div class="med-sum-card" style="border-color:#fecaca"><div class="med-sum-val" style="color:var(--danger)">${out}</div><div class="med-sum-lbl">Épuisés</div></div>`;
-
+ 
   const tb = document.getElementById('tb-medicaments');
   if (!rows.length) { tb.innerHTML = `<tr><td class="empty-td" colspan="9">Aucun médicament.</td></tr>`; return; }
-
+ 
   tb.innerHTML = rows.map(m => {
     const sc  = m.stock == 0 ? 'stock-out' : m.stock <= m.seuil ? 'stock-low' : 'stock-ok';
     const slb = m.stock == 0 ? '⛔ Épuisé'  : m.stock <= m.seuil ? `⚠ ${m.stock}` : m.stock;
@@ -748,13 +738,13 @@ async function renderMeds() {
     </tr>`;
   }).join('');
 }
-
+ 
 async function delMed(id) {
   if (!confirm('Supprimer ce médicament ?')) return;
   const r = await api(`medicaments&id=${id}`, 'DELETE');
   if (r) { await refresh('medicaments'); renderMeds(); toast('Supprimé', 'danger'); }
 }
-
+ 
 function printMeds() {
   if (!DB.medicaments.length) { toast('Aucun médicament', 'warn'); return; }
   const now = new Date().toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
@@ -776,7 +766,7 @@ function printMeds() {
   w.document.close();
   setTimeout(() => w.print(), 400);
 }
-
+ 
 /* ── PASSWORDS ───────────────────────────────────────────── */
 async function renderPasswords() {
   await refresh('medecins');
@@ -784,9 +774,6 @@ async function renderPasswords() {
   if (!list) return;
   list.innerHTML = DB.medecins.map(m => `
     <div class="pwd-card">
-      <div class="pwd-av" style="background:${m.color||'#16a34a'}">
-        ${m.nom.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
-      </div>
       <div style="flex:1">
         <div class="pwd-name">${san(m.nom)}</div>
         <div class="pwd-meta">Identifiant : <code>${san(m.user)}</code> · ${san(m.spec)}</div>
@@ -794,27 +781,27 @@ async function renderPasswords() {
       <button class="btn btn-warn btn-sm" onclick="openModal('changePass','${m.id}')">🔑 Changer</button>
     </div>`).join('');
 }
-
+ 
 /* ── MODAL ───────────────────────────────────────────────── */
 let _mT = null, _mI = null;
-
+ 
 function openModal(type, id = null) {
   _mT = type; _mI = id;
   document.getElementById('modal-ov').classList.add('open');
-
+ 
   const pO   = DB.patients.map(p  => `<option value="${p.id}">${san(p.nom)}</option>`).join('');
   const mO   = DB.medecins.map(m  => `<option value="${m.id}">${san(m.nom)} – ${san(m.spec)}</option>`).join('');
   const motO = MOTIFS.map(m       => `<option>${m}</option>`).join('');
   const spO  = SPECS.map(s        => `<option>${s}</option>`).join('');
   const catO = MED_CATS.map(c     => `<option>${c}</option>`).join('');
   const frmO = MED_FORMES.map(f   => `<option>${f}</option>`).join('');
-
+ 
   const set  = (title, sub = '') => {
     document.getElementById('m-title').textContent = title;
     document.getElementById('m-sub').textContent   = sub;
   };
   const v = i => document.getElementById(i)?.value?.trim() || '';
-
+ 
   /* ── médecin ── */
   if (type === 'medecin') {
     const m = id ? DB.medecins.find(x => x.id === id) : {};
@@ -1063,16 +1050,16 @@ function openModal(type, id = null) {
         <input class="form-inp" type="password" id="f-conf-pass" placeholder="Répéter"/></div>`;
   }
 }
-
+ 
 function closeModal() {
   document.getElementById('modal-ov').classList.remove('open');
   _mT = null; _mI = null;
 }
-
+ 
 async function submitModal() {
   const type = _mT, id = _mI;
   const v = i => document.getElementById(i)?.value?.trim() || '';
-
+ 
   if (type === 'medecin') {
     if (!v('f-nom') || !v('f-user')) { toast('Nom et identifiant obligatoires', 'danger'); return; }
     if (!id && !v('f-pass'))          { toast('Mot de passe obligatoire', 'danger');         return; }
@@ -1173,11 +1160,11 @@ async function submitModal() {
       if (r) { await refresh('medecins'); renderPasswords(); renderTbl('medecin'); }
     }
   }
-
+ 
   toast(id ? 'Mis à jour ✓' : 'Ajouté ✓', 'success');
   closeModal();
 }
-
+ 
 /* ── DELETE & PRINT ──────────────────────────────────────── */
 async function delRow(type, id) {
   if (!confirm('Supprimer cet enregistrement ?')) return;
@@ -1190,7 +1177,7 @@ async function delRow(type, id) {
   type === 'prescription' ? renderRx(CU.role === 'medecin') : renderTbl(type);
   toast('Supprimé', 'danger');
 }
-
+ 
 function printPage(type) {
   const map = { medecin:DB.medecins, patient:DB.patients, rdv:DB.rdvs, consultation:DB.consultations };
   const rows = map[type] || [];
@@ -1224,7 +1211,7 @@ function printPage(type) {
   w.document.close();
   setTimeout(() => w.print(), 400);
 }
-
+ 
 /* ── TOAST ───────────────────────────────────────────────── */
 function toast(msg, type = 'success') {
   const icons  = { success:'✓', danger:'✕', warn:'⚠', info:'ℹ' };
@@ -1238,15 +1225,17 @@ function toast(msg, type = 'success') {
     setTimeout(() => el.remove(), 300);
   }, 3000);
 }
-
+ 
 /* ── KEYBOARD SHORTCUTS ──────────────────────────────────── */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape')          closeModal();
   if (e.ctrlKey && e.key === 'Enter') submitModal();
 });
-
+ 
 /* ── URL param: pre-select role ──────────────────────────── */
 const urlRole = new URLSearchParams(window.location.search).get('role');
 if (urlRole === 'medecin') {
   setLoginRole('medecin', document.getElementById('lt-med'));
 }
+ 
+

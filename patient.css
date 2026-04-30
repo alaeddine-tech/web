@@ -1,10 +1,10 @@
 :root{
   --blue:#2563eb;--blue-d:#1d4ed8;--blue-l:#dbeafe;--blue-xl:#eff6ff;
   --indigo:#6366f1;--purple:#9333ea;
-  --g50:#f0fdf4;--g200:#bbf7d0;--g500:#22c55e;--g600:#0a7c59;--g700:#15803d;
+  --g50:#f0fdf4;--g200:#bbf7d0;
   --white:#fff;--gray50:#f9fafb;--gray100:#f3f4f6;--gray200:#e5e7eb;
   --gray300:#d1d5db;--gray400:#9ca3af;--gray500:#6b7280;--gray700:#374151;--gray900:#111827;
-  --danger:#ef4444;--warn:#f59e0b;
+ 
   --radius:14px;--rsm:8px;--shadow:0 2px 12px rgba(37,99,235,.1);--shadow2:0 8px 32px rgba(37,99,235,.18);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -45,7 +45,11 @@ input,select,textarea,button{font-family:inherit}
 .auth-switch a{color:var(--blue);cursor:pointer;font-weight:600}
 .back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--gray400);cursor:pointer;margin-bottom:20px;text-decoration:none}
 .back-link:hover{color:var(--blue)}
+.app-lang{display:flex;gap:3px;background:var(--g50);border-radius:99px;padding:3px;border:1.5px solid var(--g200)}
+auth-lang{
+  display:flex;gap:3px;background:var(--g50);border-radius:99px;padding:3px;border:1.5px solid var(--g200)
 
+}
 /* ── MAIN APP ── */
 #app{display:none;height:100vh;flex-direction:column}
 #app.show{display:flex}
