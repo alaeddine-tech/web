@@ -2,7 +2,7 @@
 error_reporting(0);
 ini_set('display_errors', '0');
 
-// ── CORS headers — MUST be before any output ────────────────
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
@@ -80,9 +80,9 @@ function doUpdate(string $table, array $allowed, array $b, string $id, array $nu
         $vals[] = $v;
     }
 
-    if (empty($sets)) return true; // nothing to update
+    if (empty($sets)) return true; 
 
-    $types .= 's'; // for the WHERE id
+    $types .= 's'; 
     $vals[] = $id;
 
     $sql  = "UPDATE `$table` SET " . implode(', ', $sets) . " WHERE id = ?";
