@@ -87,7 +87,7 @@ auth-lang{
 .stat-card{flex:1;min-width:100px;background:#fff;border:1.5px solid var(--gray200);border-radius:12px;padding:16px 18px;text-align:center;box-shadow:var(--shadow)}
 .stat-val{font-size:28px;font-weight:700}.stat-lbl{font-size:11px;color:var(--gray400);text-transform:uppercase;letter-spacing:.6px;margin-top:3px}
 
-/* RDV form */
+/* RdV form */
 .form-card{background:#fff;border-radius:var(--radius);padding:24px 28px;border:1.5px solid var(--gray200);box-shadow:var(--shadow);margin-bottom:20px}
 .section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--blue);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--blue-l)}
 .fi{width:100%;height:44px;padding:0 14px;border:1.5px solid var(--gray200);border-radius:10px;font-size:14px;color:var(--gray900);transition:border-color .2s}
@@ -100,7 +100,7 @@ auth-lang{
 .btn-send{background:linear-gradient(135deg,var(--blue),var(--indigo));color:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.3)}
 .btn-send:hover{opacity:.9}
 
-/* RDV cards */
+/* RdV cards */
 .rdv-card{background:#fff;border-radius:14px;padding:20px;border:1.5px solid var(--gray200);margin-bottom:12px;border-left:4px solid var(--gray300);box-shadow:var(--shadow)}
 .rdv-card.pending{border-left-color:var(--warn)}
 .rdv-card.accepted{border-left-color:var(--g500)}

@@ -148,6 +148,7 @@ function tr(k) { return T[LANG]?.[k] ?? T.fr[k] ?? k; }
 
 function setLang(lang, btn) {
   LANG = lang;
+  sessionStorage.setItem('patLang', lang);
   document.documentElement.lang = lang;
   document.documentElement.dir  = lang === 'ar' ? 'rtl' : 'ltr';
   document.querySelectorAll('.lang-btn').forEach(b =>
@@ -263,6 +264,7 @@ async function doRegister() {
 
 async function startApp(pat) {
   patSession = pat;
+  sessionStorage.setItem('patSession', JSON.stringify(pat));
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').classList.add('show');
 
@@ -286,6 +288,8 @@ async function startApp(pat) {
 
 function doLogout() {
   patSession = null;
+  sessionStorage.removeItem('patSession');
+  sessionStorage.removeItem('patLang');
   document.getElementById('app').classList.remove('show');
   document.getElementById('auth-screen').style.display = 'flex';
   document.getElementById('l-user').value = '';
@@ -539,3 +543,28 @@ function toast(msg, type = 'success') {
 document.getElementById('l-pass')?.addEventListener('keydown', e => {
   if (e.key === 'Enter') doLogin();
 });
+
+/* ── RESTORE SESSION ON REFRESH ──────────────────────────── */
+(function restoreSession() {
+  const savedLang = sessionStorage.getItem('patLang');
+  if (savedLang && T[savedLang]) {
+    LANG = savedLang;
+    document.documentElement.lang = savedLang;
+    document.documentElement.dir  = savedLang === 'ar' ? 'rtl' : 'ltr';
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === savedLang));
+  }
+
+  const saved = sessionStorage.getItem('patSession');
+  if (saved) {
+    try {
+      const pat = JSON.parse(saved);
+      if (pat && pat.id) {
+        startApp(pat);
+        return;
+      }
+    } catch (e) { /* ignore */ }
+  }
+  // No saved session — show auth screen as normal
+  applyTranslations();
+})();

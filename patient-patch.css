@@ -1,29 +1,38 @@
 
-.auth-lang {
-  display: flex;
-  gap: 6px;
-  justify-content: flex-end;
-  margin-bottom: 12px;
-}
-.app-lang {
-  display: flex;
-  gap: 6px;
-  margin-right: 10px;
-}
 .lang-btn {
-  padding: 4px 10px;
-  border-radius: 20px;
-  border: 1.5px solid var(--gray200, #e5e7eb);
+  padding: 4px 11px;
+  border-radius: 99px;
+  border: none;
   background: transparent;
   font-size: 11px;
-  font-weight: 600;
-  color: var(--gray500, #6b7280);
+  font-weight: 700;
+  color: var(--blue-d, #1d4ed8);
   cursor: pointer;
   transition: all .18s;
   font-family: inherit;
 }
-.lang-btn:hover  { border-color: var(--g400, #4ade80); color: var(--g600, #16a34a); }
-.lang-btn.active { background: var(--g500, #22c55e); border-color: var(--g500, #22c55e); color: #fff; }
+.lang-btn:hover  { background: var(--blue-l, #dbeafe); color: var(--blue-d, #1d4ed8); }
+.lang-btn.active { background: var(--blue, #2563eb); color: #fff; box-shadow: 0 2px 8px rgba(37,99,235,.3); }
+
+.auth-lang {
+  display: flex;
+  gap: 3px;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+  background: var(--blue-xl, #eff6ff);
+  border: 1px solid var(--blue-l, #dbeafe);
+  border-radius: 99px;
+  padding: 3px;
+}
+.app-lang {
+  display: flex;
+  gap: 3px;
+  margin-right: 10px;
+  background: var(--blue-xl, #eff6ff);
+  border: 1px solid var(--blue-l, #dbeafe);
+  border-radius: 99px;
+  padding: 3px;
+}
 
 /* ── RDV card ── */
 .rdv-card {
