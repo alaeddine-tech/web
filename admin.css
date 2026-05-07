@@ -1,13 +1,13 @@
 :root{
-  /* Blues / Indigo (patient palette) */
+ 
   --g50:#eff6ff;  --g100:#dbeafe; --g200:#bfdbfe; --green2:#4f46e5;
   --g400:#60a5fa; --g500:#2563eb; --g600:#1d4ed8; --dark:#1e1b4b;
   --g700:#1e3a8a; --g800:rgba(37,99,235,.3); --g900:#1e2d5a;
-  /* Neutrals */
+
   --white:#ffffff; --gray50:#f9fafb; --gray100:#f3f4f6;
   --gray200:#e5e7eb; --gray300:#d1d5db; --gray400:#9ca3af;
   --gray500:#6b7280; --gray700:#374151; --gray900:#111827;
-  /* Semantic */
+ 
   --bg:var(--white); --surface:var(--g50);
   --primary:var(--g600); --primary-dark:var(--g700);
   --primary-light:var(--g100); --primary-xlight:var(--g50);
@@ -28,15 +28,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 ::-webkit-scrollbar-track{background:transparent}
 [dir="rtl"]{font-family:'DM Sans',sans-serif}
 
-/* ══════════════════════════════════════════
-   LANDING PAGE
-══════════════════════════════════════════ */
+
 #landing{
   position:fixed;inset:0;z-index:9999;
   overflow-y:auto;background:var(--white);
 }
 
-/* NAV */
+
 .l-nav{
   display:flex;align-items:center;justify-content:space-between;
   padding:0 64px;height:70px;

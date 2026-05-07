@@ -10,11 +10,11 @@ header('Content-Type: application/json; charset=UTF-8');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit(); }
 
-// ── DATABASE ─────────────────────────────────────────────────
+
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
-define('DB_PASS', '');         // XAMPP default: empty
-define('DB_NAME', 'al-shifa'); // your database name
+define('DB_PASS', '');         
+define('DB_NAME', 'al-shifa'); 
 
 function getDB(): mysqli {
     static $conn = null;
@@ -27,7 +27,7 @@ function getDB(): mysqli {
     return $conn;
 }
 
-// ── HELPERS ──────────────────────────────────────────────────
+
 function respond($data, int $code = 200): void {
     http_response_code($code);
     echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -73,7 +73,7 @@ function doUpdate(string $table, array $allowed, array $b, string $id, array $nu
         $v = $b[$f];
         if (in_array($f, $nullable) && ($v === '' || $v === null)) {
             $v = null;
-            $types .= 's'; // bind null as string type (mysqli handles null regardless of type)
+            $types .= 's'; 
         } else {
             $types .= 's';
         }

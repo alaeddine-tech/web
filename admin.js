@@ -1,7 +1,7 @@
 
 const API = 'http://localhost/cabinet/back-end/api1.php';
  
-/* ── CORE fetch helper ──────────────────────────────────── */
+
 async function api(endpoint, method = 'GET', data = null) {
   try {
     const opts = {
